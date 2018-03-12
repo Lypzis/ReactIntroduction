@@ -33,7 +33,7 @@ class App extends Component {
     //const persons = this.state.persons.slice(); //copy(with slice, without, it would be a reference) state persons array or
     const persons = [...this.state.persons] //copy state persons array using spread operator to a new array
     persons.splice(personIndex, 1); //remove indexed person
-    this.setState({persons: persons}); //update the state array
+    this.setState({ persons: persons }); //update the state array
   }
 
   nameChangeHandler = (event, id) => {
@@ -52,65 +52,80 @@ class App extends Component {
     persons[personIndex] = person;
 
     //then update the state with the new persons array
-    this.setState({persons: persons});
+    this.setState({ persons: persons });
   }
 
   togglePersonsHandler = () => {
     const doesShow = this.state.showPersons;
-    this.setState({showPersons: !doesShow}); //reverts to true
+    this.setState({ showPersons: !doesShow }); //reverts to true
   }
 
   render() {
 
     const style = {
-      backgroundColor: 'white',
+      backgroundColor: 'green',
+      color: 'white',
       font: 'inherit',
       border: '1px solid blue',
       padding: '8px',
-      cursor: 'pointer'
-    }
+      cursor: 'pointer',
+      ':hover': {
+        backgroundColor: 'lightgreen',
+        color: 'black'
+      }
+    };
 
     let persons = null;
 
     //better, verify if toggle is true, then show the content
-    if(this.state.showPersons) {
+    if (this.state.showPersons) {
       persons = (
         <div>
           {/* for all persons in the array, create a new one 
             and return in the way React understands */}
 
-            {this.state.persons.map((person, index) => { 
-              return <Person 
-                click={this.deletePersonHandler.bind(this, index)}
-                name={person.name} 
-                age={person.age}
-                key={person.id}  //every object of a list must have a key
-                changed={(event) => this.nameChangeHandler(event, person.id)} />
-            })}
-
-        </div> 
+          {this.state.persons.map((person, index) => {
+            return <Person
+              click={this.deletePersonHandler.bind(this, index)}
+              name={person.name}
+              age={person.age}
+              key={person.id}  //every object of a list must have a key
+              changed={(event) => this.nameChangeHandler(event, person.id)} />
+          })}
+        </div>
       );
+      style.backgroundColor = 'red';
+      
+    }
+
+    const classes = []; //array of classes joined;
+    if (this.state.persons.length <= 2) {
+      classes.push('red'); //classes = ['red']
+    }
+
+    if (this.state.persons.length <= 1) {
+      classes.push('bold'); //classes = ['red', 'bold'];
     }
 
     return (
-      <div className="App">
-        <h1>Hi there!</h1>
-        <p>This is really working!!!</p>
-        <button
-          style={style}
-          onClick={this.togglePersonsHandler}>
-          Toggle Persons
+        <div className="App">
+          <h1>Hi there!</h1>
+          <p className={classes.join(' ')}>This is really working!!!</p>
+          <button
+            style={style}
+            onClick={this.togglePersonsHandler}>
+            Toggle Persons
         </button>
-        <br />
+          <br />
 
-        {persons} {/* reference to variable person, best practice */}
+          {persons} {/* reference to variable person, best practice */}
 
-        {/* Not best practice
+          {/* Not best practice
           this.state.showPersons ?  //if true, shows the block, else, nothing
             
            : null
            */}
-      </div>
+        </div>
     );
   }
 }
