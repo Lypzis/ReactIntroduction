@@ -1,0 +1,3 @@
+.App {  /* :global .Post { ... } set it to global so in App.js ==> className="Post" */
+  text-align: center;
+}

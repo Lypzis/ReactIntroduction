@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import './App.css';
-import Person from './Person/Person';
+import classes from './App.css';
+import Persons from '../components/Persons/Persons';
+import Cockpit from '../components/Cockpit/Cockpit';
+
+//import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary';
 
 class App extends Component {
   //Only available in component extended by Component
@@ -62,69 +65,27 @@ class App extends Component {
 
   render() {
 
-    const style = {
-      backgroundColor: 'green',
-      color: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer',
-      ':hover': {
-        backgroundColor: 'lightgreen',
-        color: 'black'
-      }
-    };
-
     let persons = null;
 
     //better, verify if toggle is true, then show the content
     if (this.state.showPersons) {
-      persons = (
-        <div>
-          {/* for all persons in the array, create a new one 
-            and return in the way React understands */}
-
-          {this.state.persons.map((person, index) => {
-            return <Person
-              click={this.deletePersonHandler.bind(this, index)}
-              name={person.name}
-              age={person.age}
-              key={person.id}  //every object of a list must have a key
-              changed={(event) => this.nameChangeHandler(event, person.id)} />
-          })}
-        </div>
-      );
-      style.backgroundColor = 'red';
+      persons = <Persons
+            persons={this.state.persons}
+            clicked={this.deletePersonHandler}
+            changed={this.nameChangeHandler} />;
       
     }
 
-    const classes = []; //array of classes joined;
-    if (this.state.persons.length <= 2) {
-      classes.push('red'); //classes = ['red']
-    }
-
-    if (this.state.persons.length <= 1) {
-      classes.push('bold'); //classes = ['red', 'bold'];
-    }
-
     return (
-        <div className="App">
-          <h1>Hi there!</h1>
-          <p className={classes.join(' ')}>This is really working!!!</p>
-          <button
-            style={style}
-            onClick={this.togglePersonsHandler}>
-            Toggle Persons
-        </button>
-          <br />
+        <div className={classes.App}>
+
+          <Cockpit 
+            showPersons={this.state.showPersons}
+            clicked={this.togglePersonsHandler}
+            persons={this.state.persons} />
 
           {persons} {/* reference to variable person, best practice */}
 
-          {/* Not best practice
-          this.state.showPersons ?  //if true, shows the block, else, nothing
-            
-           : null
-           */}
         </div>
     );
   }
