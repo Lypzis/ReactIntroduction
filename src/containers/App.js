@@ -1,43 +1,59 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import classes from './App.css';
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
 
 //import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary';
 
-class App extends Component {
-  //Only available in component extended by Component
-  state = {
-    persons: [
-      { id: 'fdse2', name: 'Max', age: 28 },
-      { id: 'dkjfi3', name: 'Manu', age: 29 },
-      { id: 'kkoel3', name: 'Stephanie', age: 26 }
-    ],
-    otherState: 'some other value',
-    showPersons: false
+class App extends PureComponent { //use PureComponent ONLY if in need to check changes of the state
+
+  //not recommended
+  constructor(props) {
+    super(props);
+    console.log('[App.js] Inside Constructor' + props);
+    //Only available in component extended by Component
+    this.state = {
+      persons: [
+        { id: 'fdse2', name: 'Max', age: 28 },
+        { id: 'dkjfi3', name: 'Manu', age: 29 },
+        { id: 'kkoel3', name: 'Stephanie', age: 26 }
+      ],
+      otherState: 'some other value',
+      showPersons: false
+    };
+  }
+
+  componentWillMount() {
+    console.log('[App.js] Inside component willmount');
+  }
+
+  componentDidMount() {
+    console.log('[App.js] Inside component didmount');
   }
 
   /*
-  switchNameHandler = (newName) => {
-    //console.log('Hey, you found me :D');
-    //DON'T DO THIS: this.state.persons[0].name = 'Maximillian';
-    //Updates the existing DOM;
-    this.setState({
-      persons: [
-        { name: newName, age: 28 },
-        { name: 'Manuela', age: 29 },
-        { name: 'Stephanie', age: 22 }
-      ]
-    });
+  //if nothing changed, there is no need to update
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('[UPDATE App.js] Inside shouldComponentUpdate', nextProps, nextState);
+    return nextState.persons !== this.state.persons ||
+    nextState.showPersons !== this.state.showPersons;
+  } */
+
+  componentWillUpdate(nextProps, nextState) {
+    console.log('[UPDATE App.js] Inside componentWillUpdate', nextProps, nextState);
   }
-  */
+
+  componentDidUpdate() {
+    console.log('[UPDATE App.js] Inside componentDidUpdate');
+  }
+
 
   deletePersonHandler = (personIndex) => {
     //const persons = this.state.persons.slice(); //copy(with slice, without, it would be a reference) state persons array or
     const persons = [...this.state.persons] //copy state persons array using spread operator to a new array
     persons.splice(personIndex, 1); //remove indexed person
     this.setState({ persons: persons }); //update the state array
-  }
+  } 
 
   nameChangeHandler = (event, id) => {
     const personIndex = this.state.persons.findIndex(p => {
@@ -65,28 +81,35 @@ class App extends Component {
 
   render() {
 
+    console.log('[App.js] Inside render');
+
     let persons = null;
 
     //better, verify if toggle is true, then show the content
     if (this.state.showPersons) {
       persons = <Persons
-            persons={this.state.persons}
-            clicked={this.deletePersonHandler}
-            changed={this.nameChangeHandler} />;
-      
+        persons={this.state.persons}
+        clicked={this.deletePersonHandler}
+        changed={this.nameChangeHandler} />;
+
     }
 
     return (
-        <div className={classes.App}>
+      <div className={classes.App}>
 
-          <Cockpit 
-            showPersons={this.state.showPersons}
-            clicked={this.togglePersonsHandler}
-            persons={this.state.persons} />
+        <button onClick={() => { this.setState({ showPersons: true }) }}>
+          Show Persons
+            </button>
 
-          {persons} {/* reference to variable person, best practice */}
+        <Cockpit
+          appTitle={this.props.title}
+          showPersons={this.state.showPersons}
+          clicked={this.togglePersonsHandler}
+          persons={this.state.persons} />
 
-        </div>
+        {persons} {/* reference to variable person, best practice */}
+
+      </div>
     );
   }
 }
