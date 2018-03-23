@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import classes from './App.css';
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
+import Aux from '../hoc/Aux';
+import withClass from '../hoc/withClass';
 
 //import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary';
 
@@ -19,7 +21,8 @@ class App extends PureComponent { //use PureComponent ONLY if in need to check c
         { id: 'kkoel3', name: 'Stephanie', age: 26 }
       ],
       otherState: 'some other value',
-      showPersons: false
+      showPersons: false,
+      toggleClickedCounter: 0
     };
   }
 
@@ -53,7 +56,7 @@ class App extends PureComponent { //use PureComponent ONLY if in need to check c
     const persons = [...this.state.persons] //copy state persons array using spread operator to a new array
     persons.splice(personIndex, 1); //remove indexed person
     this.setState({ persons: persons }); //update the state array
-  } 
+  }
 
   nameChangeHandler = (event, id) => {
     const personIndex = this.state.persons.findIndex(p => {
@@ -76,8 +79,14 @@ class App extends PureComponent { //use PureComponent ONLY if in need to check c
 
   togglePersonsHandler = () => {
     const doesShow = this.state.showPersons;
-    this.setState({ showPersons: !doesShow }); //reverts to true
+    this.setState((prevState, props) => {
+      return {
+        showPersons: !doesShow, //reverts to true
+        toggleClickedCounter: prevState.toggleClickedCounter + 1 //previous State, so it can't be acced anywhere else, no side effects. better practice!
+      }
+    })
   }
+
 
   render() {
 
@@ -95,8 +104,8 @@ class App extends PureComponent { //use PureComponent ONLY if in need to check c
     }
 
     return (
-      <div className={classes.App}>
-
+      //wrap component 
+      <Aux>
         <button onClick={() => { this.setState({ showPersons: true }) }}>
           Show Persons
             </button>
@@ -108,10 +117,9 @@ class App extends PureComponent { //use PureComponent ONLY if in need to check c
           persons={this.state.persons} />
 
         {persons} {/* reference to variable person, best practice */}
-
-      </div>
+      </Aux>
     );
   }
 }
 
-export default App;
+export default withClass(App, classes.App);

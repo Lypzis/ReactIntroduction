@@ -6,11 +6,11 @@ const cockpit = (props) => {
     let btnClass = '';
 
     if(props.showPersons){
-        btnClass = classes.Red;
+        btnClass = [classes.Button, classes.Red].join(' ');
     }
 
     if (props.persons.length <= 2) {
-      assignedClasses.push(classes.red); //classes = ['red']
+      assignedClasses.push(classes.Red); //classes = ['red']
     }
 
     if (props.persons.length <= 1) {
@@ -18,7 +18,7 @@ const cockpit = (props) => {
     }
 
     return (
-        <div className={classes.Cockpit}>
+        <React.Fragment>
             <h1>{props.appTitle}</h1>
             <p className={assignedClasses.join(' ')}>This is really working!!!</p>
             <button
@@ -27,7 +27,7 @@ const cockpit = (props) => {
                 Toggle Persons
             </button>
             <br />
-        </div>
+        </React.Fragment>
     );
 }
 
